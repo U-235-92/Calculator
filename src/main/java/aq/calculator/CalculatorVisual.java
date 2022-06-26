@@ -25,12 +25,15 @@ public class CalculatorVisual {
     private JTextField textFieldDisplay;
     private final JButton[][] BUTTONS;
 
-    public CalculatorVisual() {
+    private CalculatorController calculatorController;
+
+    public CalculatorVisual(CalculatorController calculatorController) {
         frame = new JFrame(TITLE);
         displayPanel = new JPanel();
         buttonPanel = new JPanel();
         mainPanel = new JPanel();
         BUTTONS = new JButton[CalculatorSchema.getRowCount()][CalculatorSchema.getColumnCount()];
+        this.calculatorController = calculatorController;
     }
 
     public void getView() {
