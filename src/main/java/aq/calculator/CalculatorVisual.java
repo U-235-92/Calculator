@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class CalculatorVisual {
-
     private final String TITLE = "Калькулятор v.1.0";
     private final Font DISPLAY_FONT = new Font("arial", Font.PLAIN, 15);
     private final int WIDTH_CALCULATOR = 265;
