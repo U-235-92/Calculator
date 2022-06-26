@@ -234,16 +234,16 @@ public class CalculatorVisual {
                 if(textFieldDisplay.getText().matches(CalculatorSchema.SUB_COMMAND)) {
                     cleanDisplay();
                 } else {
-                    calculatorController.pushOperand(textFieldDisplay.getText());
-                    calculatorController.pushOperator(CalculatorSchema.ADD_COMMAND);
+                    pushData(textFieldDisplay.getText(), CalculatorSchema.ADD_COMMAND);
+                    calculatorController.getResult();
                 }
             }
         }
 
         private void doSubtractCommand() {
             if(!isDisplayEmpty()) {
-                calculatorController.pushOperand(textFieldDisplay.getText());
-                calculatorController.pushOperator(CalculatorSchema.ADD_COMMAND);
+                pushData(textFieldDisplay.getText(), CalculatorSchema.SUB_COMMAND);
+                calculatorController.getResult();
             } else {
                 setMinusToDisplay();
             }
@@ -255,19 +255,22 @@ public class CalculatorVisual {
 
         private void doMultiplyCommand() {
             if(!isDisplayEmpty()) {
-
+                pushData(textFieldDisplay.getText(), CalculatorSchema.MUL_COMMAND);
+                calculatorController.getResult();
             }
         }
 
         private void doDivideCommand() {
             if(!isDisplayEmpty()) {
-
+                pushData(textFieldDisplay.getText(), CalculatorSchema.DIV_COMMAND);
+                calculatorController.getResult();
             }
         }
 
         private void doPercentCommand() {
             if(!isDisplayEmpty()) {
-
+                pushData(textFieldDisplay.getText(), CalculatorSchema.PERCENT_COMMAND);
+                calculatorController.getResult();
             }
         }
 
@@ -287,7 +290,8 @@ public class CalculatorVisual {
 
         private void doEqualsCommand() {
             if(!isDisplayEmpty()) {
-
+                pushData(textFieldDisplay.getText(), CalculatorSchema.EQU_COMMAND);
+                calculatorController.getResult();
             }
         }
 
@@ -314,6 +318,13 @@ public class CalculatorVisual {
         private void setDisplayText(String textButton, String additionText) {
             String operand = additionText + textButton;
             textFieldDisplay.setText(operand);
+        }
+
+        private void pushData(String operand, String operator) {
+            if(!textFieldDisplay.getText().matches(CalculatorSchema.SUB_COMMAND)) {
+                calculatorController.pushOperand(operand);
+                calculatorController.pushOperator(operator);
+            }
         }
 
         private void backspaceDisplay() {
