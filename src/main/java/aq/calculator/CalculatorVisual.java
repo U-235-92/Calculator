@@ -170,6 +170,8 @@ public class CalculatorVisual {
     }
 
     private class CalculatorListener implements ActionListener {
+
+        private String lastUsedButtonTitle;
         @Override
         public void actionPerformed(ActionEvent ae) {
             JButton button = (JButton) ae.getSource();
@@ -180,17 +182,28 @@ public class CalculatorVisual {
         private void buttonActionHandle(String textButton) {
             switch (textButton) {
                 case CalculatorSchema.ADD_COMMAND:
+                    doAdditionCommand();
+                    writeLastButtonTitle(textButton);
                     break;
                 case CalculatorSchema.SUB_COMMAND:
+                    doSubtractCommand();
+                    writeLastButtonTitle(textButton);
                     break;
                 case CalculatorSchema.MUL_COMMAND:
+                    doMultiplyCommand();
+                    writeLastButtonTitle(textButton);
                     break;
                 case CalculatorSchema.DIV_COMMAND:
+                    doDivideCommand();
+                    writeLastButtonTitle(textButton);
                     break;
                 case CalculatorSchema.EQU_COMMAND:
+                    doEqualsCommand();
+                    writeLastButtonTitle(textButton);
                     break;
                 case CalculatorSchema.C_COMMAND:
                     cleanDisplay();
+                    calculatorController.reset();
                     break;
                 case CalculatorSchema.CE_COMMAND:
                     cleanDisplay();
@@ -199,15 +212,100 @@ public class CalculatorVisual {
                     backspaceDisplay();
                     break;
                 case CalculatorSchema.POINT_COMMAND:
+                    doPointCommand();
                     break;
                 case CalculatorSchema.PERCENT_COMMAND:
+                    doPercentCommand();
+                    writeLastButtonTitle(textButton);
                     break;
                 default:
-                    setNumberToDisplay(textButton);
-//                    cleanDisplay();
+                    doNumberCommand(textButton);
+                    writeLastButtonTitle(textButton);
                     break;
             }
         }
+
+        private void writeLastButtonTitle(String textButton) {
+            lastUsedButtonTitle = textButton;
+        }
+
+        private void doAdditionCommand() {
+            if(!isDisplayEmpty()) {
+                if(textFieldDisplay.getText().matches(CalculatorSchema.SUB_COMMAND)) {
+                    cleanDisplay();
+                } else {
+                    calculatorController.pushOperand(textFieldDisplay.getText());
+                    calculatorController.pushOperator(CalculatorSchema.ADD_COMMAND);
+                }
+            }
+        }
+
+        private void doSubtractCommand() {
+            if(!isDisplayEmpty()) {
+                calculatorController.pushOperand(textFieldDisplay.getText());
+                calculatorController.pushOperator(CalculatorSchema.ADD_COMMAND);
+            } else {
+                setMinusToDisplay();
+            }
+        }
+
+        private void setMinusToDisplay() {
+            setDisplayText(CalculatorSchema.SUB_COMMAND, "");
+        }
+
+        private void doMultiplyCommand() {
+            if(!isDisplayEmpty()) {
+
+            }
+        }
+
+        private void doDivideCommand() {
+            if(!isDisplayEmpty()) {
+
+            }
+        }
+
+        private void doPercentCommand() {
+            if(!isDisplayEmpty()) {
+
+            }
+        }
+
+        private void doPointCommand() {
+            if(!isDisplayEmpty()) {
+                if(!isNumberContainsPoint()) {
+                    setDisplayText(CalculatorSchema.POINT_COMMAND, textFieldDisplay.getText());
+                }
+            } else {
+                setDisplayText(CalculatorSchema.POINT_COMMAND, "0");
+            }
+        }
+
+        private boolean isNumberContainsPoint() {
+            return textFieldDisplay.getText().matches("\\d+\\.|\\d+\\.\\d+");
+        }
+
+        private void doEqualsCommand() {
+            if(!isDisplayEmpty()) {
+
+            }
+        }
+
+        private void doNumberCommand(String number) {
+            if(!isDisplayEmpty()) {
+                if(!lastUsedButtonTitle.matches("\\d")) {
+                    cleanDisplay();
+                }
+                setNumberToDisplay(number);
+            } else {
+                setNumberToDisplay(number);
+            }
+        }
+
+        private boolean isDisplayEmpty() {
+            return textFieldDisplay.getText().equals("");
+        }
+
 
         private void setNumberToDisplay(String textButton) {
             String textDisplay = textFieldDisplay.getText();
@@ -224,13 +322,6 @@ public class CalculatorVisual {
                 if(textDisplay.length() > 1) {
                     String operand = textDisplay.substring(0, textDisplay.length() - 1);
                     setDisplayText(operand, DisplayMessages.EMPTY_DISPLAY_MESSAGE.getStringMessage());
-//                    Pattern patternPoint = Pattern.compile("\\.");
-//                    Matcher matcherPoint = patternPoint.matcher(operand);
-//                    if(!matcherPoint.find()) {
-//                        if(isDisableButton(BTN_POINT_TITLE)) {
-//                            enableButton(BTN_POINT_TITLE);
-//                        }
-//                    }
                 } else {
                     cleanDisplay();
                 }

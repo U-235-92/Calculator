@@ -25,6 +25,8 @@ public class CalculatorLogic {
     private String calculate() {
         String result = null;
         if(operandQueue.size() > 1) {
+            BigDecimal secondOperand = popOperand();
+            BigDecimal firstOperand = popOperand();
 
         } else if(operandQueue.size() == 1) {
 
@@ -88,16 +90,7 @@ public class CalculatorLogic {
     }
 
     public void pushOperator(String operator) {
-        if(operandQueue.size() == 0) {
-            if(operatorQueue.size() > 0) {
-                operatorQueue.remove();
-                operatorQueue.push(operator);
-            } else {
-                operatorQueue.push(operator);
-            }
-        } else {
-
-        }
+        operatorQueue.push(operator);
     }
 
     private String popOperator() {
