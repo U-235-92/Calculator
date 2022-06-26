@@ -189,6 +189,48 @@ public class CalculatorVisual {
         }
     }
 
+    public void enableButton(String buttonTitle) {
+        for(int i = 0; i < CalculatorSchema.getRowCount(); i++) {
+            for(int j = 0; j < CalculatorSchema.getColumnCount(); j++) {
+                if(BUTTONS[i][j].getText().equals(buttonTitle)) {
+                    BUTTONS[i][j].setEnabled(true);
+                }
+            }
+        }
+    }
+
+    public void disableButton(String buttonTitle) {
+        for(int i = 0; i < CalculatorSchema.getRowCount(); i++) {
+            for(int j = 0; j < CalculatorSchema.getColumnCount(); j++) {
+                if(BUTTONS[i][j].getText().equals(buttonTitle)) {
+                    BUTTONS[i][j].setEnabled(false);
+                }
+            }
+        }
+    }
+
+    public boolean isEnableButton(String buttonTitle) {
+        for(int i = 0; i < CalculatorSchema.getRowCount(); i++) {
+            for(int j = 0; j < CalculatorSchema.getColumnCount(); j++) {
+                if(BUTTONS[i][j].getText().equals(buttonTitle)) {
+                    return BUTTONS[i][j].isEnabled();
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isDisableButton(String buttonTitle) {
+        for(int i = 0; i < CalculatorSchema.getRowCount(); i++) {
+            for(int j = 0; j < CalculatorSchema.getColumnCount(); j++) {
+                if(BUTTONS[i][j].getText().equals(buttonTitle)) {
+                    return !BUTTONS[i][j].isEnabled();
+                }
+            }
+        }
+        return false;
+    }
+
     private class CalculatorListener implements ActionListener {
 
         private String lastUsedButtonTitle;
@@ -313,6 +355,8 @@ public class CalculatorVisual {
             if(!isDisplayEmpty()) {
                 pushData(textFieldDisplay.getText(), CalculatorSchema.EQU_COMMAND);
                 getResult();
+                disableButton(CalculatorSchema.B_COMMAND);
+                disableButton(CalculatorSchema.CE_COMMAND);
             }
         }
 
@@ -320,6 +364,12 @@ public class CalculatorVisual {
             if(!isDisplayEmpty()) {
                 if(!lastUsedButtonTitle.matches("\\d")) {
                     cleanDisplay();
+                    if(isDisableButton(CalculatorSchema.B_COMMAND)) {
+                        enableButton(CalculatorSchema.B_COMMAND);
+                    }
+                    if(isDisableButton(CalculatorSchema.CE_COMMAND)) {
+                        enableButton(CalculatorSchema.CE_COMMAND);
+                    }
                 }
             }
             setNumberToDisplay(number);
