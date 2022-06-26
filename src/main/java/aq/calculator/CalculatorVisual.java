@@ -397,11 +397,11 @@ public class CalculatorVisual {
             return textFieldDisplay.getText().equals("");
         }
 
-
         private void setNumberToDisplay(String textButton) {
             String textDisplay = textFieldDisplay.getText();
             setDisplayText(textButton, textDisplay);
         }
+
         private void setDisplayText(String textButton, String additionText) {
             String operand = additionText + textButton;
             textFieldDisplay.setText(operand);
