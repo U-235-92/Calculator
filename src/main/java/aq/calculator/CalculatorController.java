@@ -17,18 +17,18 @@ public class CalculatorController {
     }
 
     public void pushOperator(String operator) {
-
+        calculatorLogic.pushOperator(operator);
     }
 
     public void pushOperand(String operand) {
-
+        calculatorLogic.pushOperand(operand);
     }
 
     public void reset() {
-
+        calculatorLogic.reset();
     }
 
     public String getResult() {
-        return null;
+        return calculatorLogic.getResult();
     }
 }

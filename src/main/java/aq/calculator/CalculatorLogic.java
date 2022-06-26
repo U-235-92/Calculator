@@ -8,14 +8,27 @@ public class CalculatorLogic {
 
     private Deque<BigDecimal> operandQueue;
     private Deque<String> operatorQueue;
-    private BigDecimal lastOperand;
+    private BigDecimal firstOperand;
+    private BigDecimal secondOperand;
     private String lastOperator;
+    private String previousOperator;
 
     public CalculatorLogic() {
         operandQueue = new LinkedList<>();
         operatorQueue = new LinkedList<>();
-        lastOperand = null;
+        firstOperand = null;
+        secondOperand = null;
         lastOperator = null;
+        previousOperator = null;
+    }
+
+    public void reset() {
+        operandQueue.removeAll(operandQueue);
+        operatorQueue.removeAll(operatorQueue);
+        firstOperand = null;
+        secondOperand = null;
+        lastOperator = null;
+        previousOperator = null;
     }
 
     public String getResult() {
@@ -25,11 +38,67 @@ public class CalculatorLogic {
     private String calculate() {
         String result = null;
         if(operandQueue.size() > 1) {
-            BigDecimal secondOperand = popOperand();
-            BigDecimal firstOperand = popOperand();
-
+            if(operandQueue.size() > 2) {
+                while(operandQueue.size() > 2) {
+                    popOperand();
+                }
+            }
+            secondOperand = popOperand();
+            firstOperand = popOperand();
+            lastOperator = popOperator();
+            if(lastOperator.equals(CalculatorSchema.EQU_COMMAND)) {
+                previousOperator = popOperator();
+                result = calculate(firstOperand, secondOperand, previousOperator);
+                if(isNoNumberResult(result)) {
+                    return result;
+                } else {
+                    pushOperand(result);
+                    pushOperand(secondOperand.toString());
+                    pushOperator(previousOperator);
+                    previousOperator = lastOperator;
+                }
+            } else if(lastOperator.equals(CalculatorSchema.PERCENT_COMMAND)) {
+                String resultPercent = calculate(firstOperand, secondOperand, lastOperator);
+                if(isNoNumberResult(resultPercent)) {
+                    return resultPercent;
+                }
+                previousOperator = popOperator();
+                result = calculate(firstOperand, new BigDecimal(resultPercent), previousOperator);
+                if(isNoNumberResult(result)) {
+                    return result;
+                } else {
+                    pushOperand(result);
+                    pushOperand(resultPercent);
+                    pushOperator(previousOperator);
+                    previousOperator = lastOperator;
+                }
+            } else {
+                if(previousOperator == null) {
+                    previousOperator = lastOperator;
+                }
+                if(previousOperator.equals(CalculatorSchema.EQU_COMMAND) || previousOperator.equals(CalculatorSchema.PERCENT_COMMAND)) {
+                    result = firstOperand.toString();
+                    pushOperand(result);
+                    pushOperator(lastOperator);
+                } else {
+                    previousOperator = popOperator();
+                    result = calculate(firstOperand, secondOperand, previousOperator);
+                    if(isNoNumberResult(result)) {
+                        return result;
+                    } else {
+                        pushOperand(result);
+                        pushOperator(lastOperator);
+                    }
+                }
+            }
         } else if(operandQueue.size() == 1) {
-
+            lastOperator = peekOperator();
+            if(lastOperator.equals(CalculatorSchema.PERCENT_COMMAND) || lastOperator.equals(CalculatorSchema.EQU_COMMAND)) {
+                popOperator();
+                result = popOperand().toString();
+            } else {
+                return operandQueue.peek().toString();
+            }
         } else {
             result = DisplayMessages.EMPTY_DISPLAY_MESSAGE.getStringMessage();
         }
@@ -85,12 +154,12 @@ public class CalculatorLogic {
                 result.equals(DisplayMessages.TO_LONG_NUMBER_MESSAGE.getStringMessage());
     }
 
-    public void pushOperand(BigDecimal operand) {
-        operandQueue.add(operand);
-    }
-
     public void pushOperator(String operator) {
         operatorQueue.push(operator);
+    }
+
+    public void pushOperand(String operand) {
+        operandQueue.push(new BigDecimal(operand));
     }
 
     private String popOperator() {
@@ -99,10 +168,6 @@ public class CalculatorLogic {
 
     private BigDecimal popOperand() {
         return operandQueue.pop();
-    }
-
-    private void pushOperand(String operand) {
-        operandQueue.push(new BigDecimal(operand));
     }
 
     private String peekOperator() {

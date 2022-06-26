@@ -169,6 +169,26 @@ public class CalculatorVisual {
         }
     }
 
+    private void enableAllButtons() {
+        for(int i = 0; i < CalculatorSchema.getRowCount(); i++) {
+            for(int j = 0; j < CalculatorSchema.getColumnCount(); j++) {
+                if(!BUTTONS[i][j].isEnabled()) {
+                    BUTTONS[i][j].setEnabled(true);
+                }
+            }
+        }
+    }
+
+    private void enableOnlyC_Button() {
+        for(int i = 0; i < CalculatorSchema.getRowCount(); i++) {
+            for(int j = 0; j < CalculatorSchema.getColumnCount(); j++) {
+                if(!BUTTONS[i][j].getText().equals(CalculatorSchema.C_COMMAND)) {
+                    BUTTONS[i][j].setEnabled(false);
+                }
+            }
+        }
+    }
+
     private class CalculatorListener implements ActionListener {
 
         private String lastUsedButtonTitle;
@@ -204,6 +224,7 @@ public class CalculatorVisual {
                 case CalculatorSchema.C_COMMAND:
                     cleanDisplay();
                     calculatorController.reset();
+                    enableAllButtons();
                     break;
                 case CalculatorSchema.CE_COMMAND:
                     cleanDisplay();
@@ -235,7 +256,7 @@ public class CalculatorVisual {
                     cleanDisplay();
                 } else {
                     pushData(textFieldDisplay.getText(), CalculatorSchema.ADD_COMMAND);
-                    calculatorController.getResult();
+                    getResult();
                 }
             }
         }
@@ -243,7 +264,7 @@ public class CalculatorVisual {
         private void doSubtractCommand() {
             if(!isDisplayEmpty()) {
                 pushData(textFieldDisplay.getText(), CalculatorSchema.SUB_COMMAND);
-                calculatorController.getResult();
+                getResult();
             } else {
                 setMinusToDisplay();
             }
@@ -256,21 +277,21 @@ public class CalculatorVisual {
         private void doMultiplyCommand() {
             if(!isDisplayEmpty()) {
                 pushData(textFieldDisplay.getText(), CalculatorSchema.MUL_COMMAND);
-                calculatorController.getResult();
+                getResult();
             }
         }
 
         private void doDivideCommand() {
             if(!isDisplayEmpty()) {
                 pushData(textFieldDisplay.getText(), CalculatorSchema.DIV_COMMAND);
-                calculatorController.getResult();
+                getResult();
             }
         }
 
         private void doPercentCommand() {
             if(!isDisplayEmpty()) {
                 pushData(textFieldDisplay.getText(), CalculatorSchema.PERCENT_COMMAND);
-                calculatorController.getResult();
+                getResult();
             }
         }
 
@@ -291,7 +312,7 @@ public class CalculatorVisual {
         private void doEqualsCommand() {
             if(!isDisplayEmpty()) {
                 pushData(textFieldDisplay.getText(), CalculatorSchema.EQU_COMMAND);
-                calculatorController.getResult();
+                getResult();
             }
         }
 
@@ -300,10 +321,26 @@ public class CalculatorVisual {
                 if(!lastUsedButtonTitle.matches("\\d")) {
                     cleanDisplay();
                 }
-                setNumberToDisplay(number);
-            } else {
-                setNumberToDisplay(number);
             }
+            setNumberToDisplay(number);
+        }
+
+        private void getResult() {
+            String result = calculatorController.getResult();
+            System.out.println(result);
+            if(isNoNumberResult(result)) {
+                enableOnlyC_Button();
+            }
+            setResultToDisplay(result);
+        }
+
+        private boolean isNoNumberResult(String result) {
+            return result.equals(DisplayMessages.TO_LONG_NUMBER_MESSAGE.getStringMessage()) ||
+                    result.equals(DisplayMessages.DIVIDE_BY_ZERO_MESSAGE.getStringMessage());
+        }
+
+        private void setResultToDisplay(String result) {
+            setDisplayText("", result);
         }
 
         private boolean isDisplayEmpty() {
