@@ -209,7 +209,7 @@ public class CalculatorVisual {
                     cleanDisplay();
                     break;
                 case CalculatorSchema.B_COMMAND:
-                    backspaceDisplay();
+                    backspaceCommand();
                     break;
                 case CalculatorSchema.POINT_COMMAND:
                     doPointCommand();
@@ -327,7 +327,7 @@ public class CalculatorVisual {
             }
         }
 
-        private void backspaceDisplay() {
+        private void backspaceCommand() {
             String textDisplay = textFieldDisplay.getText();
             if(!textDisplay.equals(DisplayMessages.EMPTY_DISPLAY_MESSAGE.getStringMessage())) {
                 if(textDisplay.length() > 1) {
